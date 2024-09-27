@@ -1,0 +1,10 @@
+trend_analysis/
+├── data/
+│   └── trend_over_time.csv  # Arquivo de dados CSV
+├── notebooks/
+│   └── analysis.ipynb       # Jupyter Notebook com a análise
+├── src/
+│   └── main.py               # Script principal
+├── README.md                 # Documentação do projeto
+├── LICENSE                   # Licença do projeto
+└── .gitignore                # Arquivos a serem ignorados pelo Git
