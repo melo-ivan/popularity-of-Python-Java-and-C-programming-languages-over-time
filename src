@@ -1,0 +1,109 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Função para ler o arquivo CSV diretamente do Google Drive
+def read_csv_from_drive(file_id):
+    link = "https://drive.google.com/uc?id=" + file_id
+    return pd.read_csv(link)
+
+# Lendo o arquivo CSV
+file_id = "1ZPJ1lw7O9NQ31JBJqSrt85eykvt6lAoq"
+df = read_csv_from_drive(file_id)
+
+# Convertendo a coluna 'Week' para o formato datetime
+df['Week'] = pd.to_datetime(df['Week'])
+
+# Configurando 'Week' como índice
+df.set_index('Week', inplace=True)
+
+# Visualizando os primeiros registros do DataFrame
+print("Primeiros registros do DataFrame:")
+print(df.head())
+
+# Tendência de popularidade ao longo do tempo
+plt.figure(figsize=(14, 7))
+plt.plot(df.index, df['Python'], label='Python', marker='o')
+plt.plot(df.index, df['Java'], label='Java', marker='o')
+plt.plot(df.index, df['C++'], label='C++', marker='o')
+plt.title('Tendência de popularidade ao longo do tempo')
+plt.xlabel('Data')
+plt.ylabel('Popularidade')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Examinando a sazonalidade
+monthly_mean = df.resample('M').mean()
+monthly_std = df.resample('M').std()
+
+plt.figure(figsize=(14, 7))
+plt.plot(monthly_mean.index, monthly_mean['Python'], label='Python', marker='o')
+plt.plot(monthly_mean.index, monthly_mean['Java'], label='Java', marker='o')
+plt.plot(monthly_mean.index, monthly_mean['C++'], label='C++', marker='o')
+plt.fill_between(monthly_mean.index, 
+                 monthly_mean['Python'] - monthly_std['Python'], 
+                 monthly_mean['Python'] + monthly_std['Python'], 
+                 alpha=0.2)
+plt.fill_between(monthly_mean.index, 
+                 monthly_mean['Java'] - monthly_std['Java'], 
+                 monthly_mean['Java'] + monthly_std['Java'], 
+                 alpha=0.2)
+plt.fill_between(monthly_mean.index, 
+                 monthly_mean['C++'] - monthly_std['C++'], 
+                 monthly_mean['C++'] + monthly_std['C++'], 
+                 alpha=0.2)
+plt.title('Sazonalidade na popularidade mensal')
+plt.xlabel('Data')
+plt.ylabel('Popularidade')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Identificando a linguagem de programação mais popular em diferentes períodos de tempo
+rolling_mean = df.rolling(window=12).mean()
+
+plt.figure(figsize=(14, 7))
+plt.plot(rolling_mean.index, rolling_mean['Python'], label='Python', marker='o')
+plt.plot(rolling_mean.index, rolling_mean['Java'], label='Java', marker='o')
+plt.plot(rolling_mean.index, rolling_mean['C++'], label='C++', marker='o')
+plt.title('Popularidade média móvel ao longo do tempo')
+plt.xlabel('Data')
+plt.ylabel('Popularidade')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Tendência de longo prazo
+plt.figure(figsize=(14, 7))
+plt.plot(df.index, df['Python'].rolling(window=52).mean(), label='Python', marker='o')
+plt.plot(df.index, df['Java'].rolling(window=52).mean(), label='Java', marker='o')
+plt.plot(df.index, df['C++'].rolling(window=52).mean(), label='C++', marker='o')
+plt.title('Tendência de longo prazo')
+plt.xlabel('Data')
+plt.ylabel('Popularidade')
+plt.legend()
+plt.grid(True)
+plt.show()
+
+# Relatório completo
+print("\nRelatório Completo:\n")
+print("1. Tendência de popularidade de cada linguagem de programação ao longo do tempo:")
+print("   - As linhas representam a popularidade ao longo do tempo para cada linguagem.")
+print("   - Python geralmente tem a maior popularidade, seguido por Java e depois C++.\n")
+
+print("2. Sazonalidade nas tendências de popularidade:")
+print("   - Os gráficos mostram a média mensal de popularidade para cada linguagem, com a sombra representando o desvio padrão.")
+print("   - Não parece haver padrões sazonais claros.\n")
+
+print("3. Linguagem de programação mais popular em diferentes períodos de tempo:")
+print("   - Os gráficos mostram a média móvel de 12 semanas da popularidade para cada linguagem.")
+print("   - Python é consistentemente a linguagem mais popular.\n")
+
+print("4. Tendência de longo prazo para o aumento ou diminuição da popularidade de cada linguagem:")
+print("   - Os gráficos mostram a média móvel de 52 semanas da popularidade para cada linguagem.")
+print("   - Python mostra uma tendência de crescimento, enquanto Java e C++ parecem ter uma tendência mais estável.\n")
+
+print("Dados Externos Relevantes:")
+print("   - Para uma análise mais aprofundada, seria útil comparar essas tendências com dados de pesquisa online, como os fornecidos pelo Google Trends.")
+print("   - Dados de popularidade de repositórios de código-fonte, como GitHub, também podem fornecer insights adicionais sobre a adoção e uso dessas linguagens.\n")
